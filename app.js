@@ -1,31 +1,66 @@
 const form = document.querySelector('#registrar');
 const input = form.querySelector('input');
+const main = document.querySelector('.main');
 const ul = document.querySelector('#invitedList');
 
+const div = document.createElement('div');
+const filterLabel = document.createElement('label');
+filterLabel.textContent = 'Filter Out Tha Flakes: ';
+const filterCheckbox = document.createElement('input');
+filterCheckbox.type = 'checkbox';
+div.appendChild(filterLabel);
+div.appendChild(filterCheckbox);
+main.insertBefore(div, ul);
+
+filterCheckbox.addEventListener('change', (e) => {
+    const isChecked = e.target.checked;
+    console.log('checked!');
+    const lis = ul.children;
+    // if isChecked === true
+    if (isChecked) {
+        // iterate thru the children
+        for (let i = 0; i < lis.length; i++) {
+            // store the array in the li variable
+            let li = lis[i];
+            // if any of the items in the li array has a class name of 'repsonded' set their display to an empty string
+            if (li.className === 'responded') {
+                li.style.display = '';
+            } else {
+                // if any of the items doesn't have the class name of 'responded', set their display to none so they hide
+                li.style.display = 'none';
+            }
+        }
+    } else {
+        // if the box isn't checked, set all the items in li's displays to an empty string so they show on the pages
+        for (let i = 0; i < lis.length; i++) {
+            let li = lis[i];
+            li.style.display = '';
+        }
+    }
+
+});
+
 const createListItem = (userInput) => {
-    // creating the list item
+    // function to create the element
+    function createElement(elementName, property, value) {
+        const element = document.createElement(elementName);
+        element[property] = value;
+        return element;
+    }
+
+    // function to append the element to the li
+    function appendToLI (elementName, property, value) {
+        const element = createElement(elementName, property, value);
+        li.appendChild(element);
+        return element;
+    }
+
     const li = document.createElement('li');
-    const span = document.createElement('span');
-    span.textContent = userInput;
-    li.appendChild(span);
-
-    //creating and appending rsvp checkbox
-    const label = document.createElement('label');
-    label.textContent = 'Confirmed';
-    const rsvpCheckbox = document.createElement('input');
-    rsvpCheckbox.type = 'checkbox';
-    label.appendChild(rsvpCheckbox);
-    li.appendChild(label);
-
-    //creating and appending edit button
-    const edit = document.createElement('button');
-    edit.textContent = 'Edit';
-    li.appendChild(edit);
-
-    //creating and appending remove button
-    const remove = document.createElement('button');
-    remove.textContent = 'Remove';
-    li.appendChild(remove);
+    appendToLI('span', 'textContent', userInput);
+    appendToLI('label', 'textContent', 'Confirmed')
+        .appendChild(createElement('input', 'type', 'checkbox'));
+    appendToLI('button', 'textContent', 'Edit');
+    appendToLI('button', 'textContent', 'Remove');
 
     return li;
 }
@@ -74,23 +109,38 @@ ul.addEventListener('click', (e) => {
         const button = e.target;
         const li = e.target.parentNode;
         const ul = li.parentNode;
+        const action = button.textContent;
 
-        if (button.textContent === 'Remove') {
-            ul.removeChild(li);
-        }
-        if (button.textContent === 'Edit') {
-            const span = li.querySelector(':first-child');
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = span.textContent;
-            li.insertBefore(input, span);
-            li.removeChild(span);
-            button.textContent = 'Save';
+        const buttonActions = {
+            remove : () => {
+                ul.removeChild(li);
+            },
+            edit : () => {
+                const span = li.querySelector(':first-child');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = span.textContent;
+                li.insertBefore(input, span);
+                li.removeChild(span);
+                button.textContent = 'Save';
+            },
+            save : () => {
+                const input = li.querySelector(':first-child');
+                const span = document.createElement('span');
+                span.textContent = input.value;
+                li.insertBefore(span, input);
+                li.removeChild(input);
+                button.textContent = 'Edit';
+            }
+        };
 
-            console.log(span);
+        if (action === 'remove') {
+            buttonActions.remove();
+        } else if (action === 'edit') {
+            buttonActions.edit();
+        } else if (action === 'save') {
+            buttonActions.save();
         }
-        if (button.textContent === 'Save') {
-            
-        }
+
     }
 });
