@@ -1,28 +1,21 @@
 const form = document.querySelector('#registrar');
 const input = form.querySelector('input');
-const main = document.querySelector('.main');
 const ul = document.querySelector('#invitedList');
-
-const div = document.createElement('div');
-const filterLabel = document.createElement('label');
-filterLabel.textContent = 'Filter Out Tha Flakes: ';
-const filterCheckbox = document.createElement('input');
-filterCheckbox.type = 'checkbox';
-div.appendChild(filterLabel);
-div.appendChild(filterCheckbox);
-main.insertBefore(div, ul);
+const filterCheckbox = document.querySelector('#filterCheckbox');
 
 filterCheckbox.addEventListener('change', (e) => {
+    // storing the boolean of true for the box being in the checked state
     const isChecked = e.target.checked;
     console.log('checked!');
+    // storing the array of children of the ul into the 'lis' variable
     const lis = ul.children;
     // if isChecked === true
     if (isChecked) {
         // iterate thru the children
         for (let i = 0; i < lis.length; i++) {
-            // store the array in the li variable
+            // store an index of the array in the li variable
             let li = lis[i];
-            // if any of the items in the li array has a class name of 'repsonded' set their display to an empty string
+            // if any of the items in the lis array has a class name of 'repsonded' set their display to an empty string
             if (li.className === 'responded') {
                 li.style.display = '';
             } else {
@@ -107,15 +100,15 @@ ul.addEventListener('click', (e) => {
     if (e.target.tagName === 'BUTTON') {
 
         const button = e.target;
-        const li = e.target.parentNode;
+        const li = button.parentNode;
         const ul = li.parentNode;
-        const action = button.textContent;
+        const actions = button.textContent;
 
-        const buttonActions = {
-            remove : () => {
+        const nameActions = {
+            remove: () => {
                 ul.removeChild(li);
             },
-            edit : () => {
+            edit: () => {
                 const span = li.querySelector(':first-child');
                 const input = document.createElement('input');
                 input.type = 'text';
@@ -124,7 +117,7 @@ ul.addEventListener('click', (e) => {
                 li.removeChild(span);
                 button.textContent = 'Save';
             },
-            save : () => {
+            save: () => {
                 const input = li.querySelector(':first-child');
                 const span = document.createElement('span');
                 span.textContent = input.value;
@@ -134,12 +127,12 @@ ul.addEventListener('click', (e) => {
             }
         };
 
-        if (action === 'remove') {
-            buttonActions.remove();
-        } else if (action === 'edit') {
-            buttonActions.edit();
-        } else if (action === 'save') {
-            buttonActions.save();
+        if (actions === 'Remove') {
+            nameActions.remove();
+        } else if (actions === 'Edit') {
+            nameActions.edit();
+        } else if (actions === 'Save') {
+            nameActions.save();
         }
 
     }
